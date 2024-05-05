@@ -47,8 +47,8 @@ A=[10.1000 0.3000 0.1000 0.3000 0.5000 0.3000 0.4000 0.2000 0.3000 0.5000;
     end
 
 % Gauss - Seidal
+
     n = size(A, 1);
-       
     T = diag(diag(A));
     U = triu(A) - T;
     L = tril(A) - T; 
@@ -89,6 +89,7 @@ A=[10.1000 0.3000 0.1000 0.3000 0.5000 0.3000 0.4000 0.2000 0.3000 0.5000;
         X = -Tinv*L*X0 - Tinv*U*X + Tinv;
     end
 % Giai dung ma tran nghich dao bang Cholesky
+
     A=[1 1 -3 2;
         1 -2 0 -1;
         0 1 1 3;
@@ -163,6 +164,7 @@ A=[10.1000 0.3000 0.1000 0.3000 0.5000 0.3000 0.4000 0.2000 0.3000 0.5000;
     end
 
 % Tim nghiem dung bang Cholesky
+
     A=[1 1 -3 2;
     1 -2 0 -1;
     0 1 1 3;
@@ -230,6 +232,7 @@ A=[10.1000 0.3000 0.1000 0.3000 0.5000 0.3000 0.4000 0.2000 0.3000 0.5000;
     end
 
 % giai dung nghiem cua hpt bang gauss
+
     function B = GaussThuan(A, b)
         n = size(A, 1);
         B=[A, b];
@@ -263,6 +266,7 @@ A=[10.1000 0.3000 0.1000 0.3000 0.5000 0.3000 0.4000 0.2000 0.3000 0.5000;
     X = Gaussnghich(C)
 
 % phan bu dai so tim dung ma tran nghich dao
+
     A=[1 5;
         -2 4]
     
@@ -279,6 +283,7 @@ A=[10.1000 0.3000 0.1000 0.3000 0.5000 0.3000 0.4000 0.2000 0.3000 0.5000;
     Anghich = transpose(C)/det(A)
 
 % vien quanh tim dung ma tran nghich dao
+
     A = [50 107 36;
         25 54 20;
         31 66 21]
