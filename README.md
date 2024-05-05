@@ -312,4 +312,39 @@ A=[10.1000 0.3000 0.1000 0.3000 0.5000 0.3000 0.4000 0.2000 0.3000 0.5000;
     end
     X = zeros(n)
     X = VienQuanh(A)
+
+% giai dung hpt bang gaussjordan
+
+    A=[1 1 -3 2 6;
+    1 -2 0 -1 -6;
+    0 1 1 3 16;
+    2 -3 2 0 6] %ma tran bo sung
+    n = size(A,1)
+    function x = GJordan(A)
+    
+    [m,n] = size(A);
+    
+    i = 1;
+    j = 1;
+
+    while i <= m && j <= n
+       [p, k] = max(abs(A(i:m,j)));
+       k = k+i-1;
+       % Swap i-th and k-th rows.
+       A([i k],j:n) = A([k i],j:n);
+       % Divide the pivot row by the pivot element.
+       A(i,j:n) = A(i,j:n)./A(i,j);
+       % Subtract multiples of the pivot row from all the other rows.
+       for k = [1:i-1 i+1:m]
+           A(k,j:n) = A(k,j:n) - A(k,j).*A(i,j:n);
+       end
+       i = i + 1;
+       j = j + 1;
+       %disp(A);
+    end
+    x = A(1:m,n);
+    end
+    
+    X = zeros(n,1)
+    X = GJordan(A)
     
