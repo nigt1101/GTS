@@ -261,3 +261,21 @@ A=[10.1000 0.3000 0.1000 0.3000 0.5000 0.3000 0.4000 0.2000 0.3000 0.5000;
     C = GaussThuan(A, B)
     X = zeros(size(A,1),1)
     X = Gaussnghich(C)
+
+% phan bu dai so tim dung ma tran nghich dao
+    A=[1 5;
+        -2 4]
+    
+    n = size(A,1)
+    C = zeros(n)
+    for i = 1:n
+        for j = 1:n
+            Aij = [A(1:i-1,1:j-1) A(1:i-1,j+1:n);
+                    A(i+1:n,1:j-1) A(i+1:n,j+1:n)]
+            
+            C(i,j) = power(-1,i+j)*det(Aij)
+        end
+    end
+    Anghich = transpose(C)/det(A)
+
+    
