@@ -229,4 +229,35 @@ A=[10.1000 0.3000 0.1000 0.3000 0.5000 0.3000 0.4000 0.2000 0.3000 0.5000;
         Cholesky(M,N);
     end
 
-
+% giai dung nghiem cua hpt bang gauss
+    function B = GaussThuan(A, b)
+        n = size(A, 1);
+        B=[A, b];
+        for k = 1: n-1
+            if B(k, k) == 0
+                disp('loi chia cho 0')
+                return
+            else
+                for i = k+1:n
+                    B(i,:) = B(i, :) - B(k, :)*B(i,k)/B(k, k);
+                end
+            end
+        end
+    end
+    function nghiem = Gaussnghich(B)
+        %B la ma tran tam giac tren
+        n = size(B, 1);
+        nghiem = zeros(n, 1);
+         for k =n:-1:1
+                if k == n
+                    nghiem(n) = B(n,n+1)/B(n,n);
+                else
+                    S = B(k,n+1)-sum(B(k,1:n)*nghiem(1:n,1))
+                    nghiem(k,1) = S/B(k,k);
+                end   
+         end
+     end
+    
+    C = GaussThuan(A, B)
+    X = zeros(size(A,1),1)
+    X = Gaussnghich(C)
