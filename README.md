@@ -347,4 +347,170 @@ A=[10.1000 0.3000 0.1000 0.3000 0.5000 0.3000 0.4000 0.2000 0.3000 0.5000;
     
     X = zeros(n,1)
     X = GJordan(A)
+
+% thuật toán tổng quát sử dụng phương pháp lũy thừa và xuống thang
+
+    function check = KTsongsong(u,v,tol)
+    check = (norm( u./norm(u,2)-v./norm(v,2), 2) <= tol) || (norm( u./norm(u,2)+v./norm(v,2), 2) <= tol);
+    end
+    
+    function [lambda, v] = powerMethod(A,tol,M)
+    if nargin == 1
+        tol = 1e-10;
+        M = 200;
+    end
+    if nargin == 2
+        M = 200;
+    end
+    
+    %tol là giá trị hiệu chỉnh
+    %M số lần lặp nhiều nhất cho phép
+    
+    n = size(A,1);
+    x = ones(n,1);
+    m = 1;
+    check = false;
+    lambda = [];
+    v =zeros(n,0);
+    % truong hop 1 gtr troi
+    y1 = x;
+    while check == false && (m <= M)
+        y1 = A*y1;
+        y2 = A*y1;
+        m= m+1;
+        check = KTsongsong(y1,y2,tol);
+    end
+    if check == true
+        disp('y1 song song voi y2')
+        lambda = [lambda; mean(y2(y2~=0)./y1(y1~=0))];
+        v1 = y1./norm(y1,2);
+        v = [v,v1];
+        disp(lambda)
+        disp(v)
+        return
+    end
+    %truong hop 2 nghiem doi nhau
+    if check == false
+        m = 1;
+        y1 = x;
+        while check ==false && (m <= M)
+            y1 = A*y1;
+            y2 = A*y1;
+            y3 = A*y2;
+            m= m+1;
+            check = KTsongsong(y1,y3,tol);
+        end
+    if check == true
+        disp('y1 song song voi y3')
+        lambda1 = sqrt(mean(y3(y3~=0)./y1(y1~=0)));
+        lambda = [lambda;lambda1;-lambda1];
+        v1 = y2+lambda1*y1;
+        v1 = v1/norm(v1,2);
+        v2 = y2-lambda1*y1;
+        v2 = v2./norm(v2,2);
+        v=[v,v1,v2];
+        disp(lambda)
+        disp(v)
+        return
+    end
+    end
+    %truong hop 2 nghiem phuc lien hop
+    if check == false
+        disp('Khong co vecto nao song song')
+         % Tính y1, y2 và y3 bằng cách lũy thừa ma trận và nhân với vector x
+        y1 = ((A^(2*m+2)) * x);
+        y2 = ((A^(2*m)) * x);
+        y3 = ((A^(2*m+1)) * x);
+    
+    % Tìm các chỉ số của các phần tử khác 0 trong y1
+    index = find(y1 ~= 0);
+    
+    % Kiểm tra xem index có đủ phần tử không
+    if length(index) < 2
+        error('Không tìm thấy đủ các phần tử khác 0 trong y1.');
+    end
+    
+    % Lấy các chỉ số đầu tiên và thứ hai
+    r = index(1);
+    s = index(2);
+
+    end
+        syms z
+        p = det([1, y2(r), y2(s);...
+              z, y3(r), y3(s); z^2 y1(r) y1(s)]);
+        lambda = double(solve(p,z));
+        v1 = y3-lambda(2)*y1;
+        v1 = v1/norm(v1,2);
+        v2 = y3-lambda(1)*y1;
+        v2 = v2/norm(v2,2);
+        v= [v1,v2];
+        disp(lambda)
+        disp(v)
+    end
+    
+    
+    function [A1] = XuongThang(A,v)
+    %tra ra ma tran A1 da xuong thang
+    [~,i] = max(abs(v));
+    v = v/v(i);
+    n = size(A);
+    theta = eye(n);
+    theta(:,i) = theta(:,i) - v;
+    A1 = theta*A;
+    end
+    
+    function [eigvalue, v] = ttTongQuat(A)
+        eigvalue = [];
+        v = [];
+        n = size(A, 1);
+    
+    
+    i = 1;
+    while i <= n
+        disp('Lan lap thu :')
+        disp(i)
+        [eigv, x] = powerMethod(A);
+        
+        cnt = numel(x);
+        if cnt == 2
+            i = i + 2;
+            A = XuongThang(A, x(:, 1));
+            A = XuongThang(A, x(:, 2));
+            
+            disp('Ma tran sau khi xuong thang')
+            disp(A)
+        else
+            i = i + 1;
+            A = XuongThang(A, x(:, 1));
+            
+            disp('Ma tran sau khi xuong thang')
+            disp(A)
+        end
+        v = [v x];
+        eigvalue = [eigvalue; eigv];
+    end
+    end
+    
+    % Định nghĩa ma trận A
+    A = [[2 3 2],
+        [4 3 5],
+        [3 2 9]];
+    
+    % Gọi hàm powerMethod để tính trị riêng và vector riêng
+    [eigvalue, v] = ttTongQuat(A);
+    disp(eigvalue)
+    disp(v)
+    
+    % Tính giá trị riêng và vector riêng của ma trận A
+    [V, D] = eig(A);
+    
+    % D là ma trận đường chéo chứa các giá trị riêng
+    disp('Ma trận giá trị riêng:');
+    disp(D);
+    
+    % V là ma trận chứa các vector riêng ứng với các giá trị riêng tương ứng
+    disp('Ma trận vector riêng:');
+    disp(V);
+
+
     
